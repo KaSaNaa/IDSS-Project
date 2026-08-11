@@ -1,15 +1,20 @@
 [submodule "modules/module-route-optimizer"]
 	path = modules/module-route-optimizer
 	url = https://github.com/KaSaNaa/module-route-optimizer.git
+	branch = main
 [submodule "modules/module-resource-allocator"]
 	path = modules/module-resource-allocator
 	url = https://github.com/KaSaNaa/module-resource-allocator.git
+	branch = main
 [submodule "modules/module-network-analyzer"]
 	path = modules/module-network-analyzer
 	url = https://github.com/KaSaNaa/module-network-analyzer.git
+	branch = main
 [submodule "modules/module-intelligent-decisions"]
 	path = modules/module-intelligent-decisions
 	url = https://github.com/KaSaNaa/module-intelligent-decisions.git
+	branch = main
 [submodule "modules/module-resource-optimizer"]
 	path = modules/module-resource-optimizer
 	url = https://github.com/KaSaNaa/module-resource-optimizer.git
+	branch = main
