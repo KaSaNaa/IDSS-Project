@@ -21,6 +21,13 @@ module.exports = {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false,
+        runtimeErrors: false,
+      },
+    },
   },
   module: {
     rules: [
@@ -48,11 +55,11 @@ module.exports = {
       name: 'idss_host',
       filename: 'remoteEntry.js',
       remotes: {
-        module1: 'module1@http://localhost:3001/remoteEntry.js',
-        module2: 'module2@http://localhost:3002/remoteEntry.js',
-        module3: 'module3@http://localhost:3003/remoteEntry.js',
-        module4: 'module4@http://localhost:3004/remoteEntry.js',
-        module5: 'module5@http://localhost:3005/remoteEntry.js',
+        module1: 'module_route_optimizer@http://localhost:3001/remoteEntry.js',
+        module2: 'module_resource_allocator@http://localhost:3002/remoteEntry.js',
+        module3: 'module_network_analyzer@http://localhost:3003/remoteEntry.js',
+        module4: 'module_intelligent_decisions@http://localhost:3004/remoteEntry.js',
+        module5: 'module_resource_optimizer@http://localhost:3005/remoteEntry.js',
       },
       shared: {
         react: { singleton: true, requiredVersion: false },

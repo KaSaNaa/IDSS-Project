@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import ModuleErrorBoundary from './components/ModuleErrorBoundary';
 import './styles/index.css';
 
 const Home = lazy(() => import('./pages/Home'));
@@ -57,11 +58,46 @@ function App() {
           <Suspense fallback={<div className="loading">Loading module...</div>}>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/route-optimization" element={<RouteOptimization />} />
-              <Route path="/resource-allocation" element={<ResourceAllocation />} />
-              <Route path="/network-analysis" element={<NetworkAnalysis />} />
-              <Route path="/intelligent-decision" element={<IntelligentDecision />} />
-              <Route path="/optimization" element={<Optimization />} />
+              <Route
+                path="/route-optimization"
+                element={
+                  <ModuleErrorBoundary moduleName="Route Optimization">
+                    <RouteOptimization />
+                  </ModuleErrorBoundary>
+                }
+              />
+              <Route
+                path="/resource-allocation"
+                element={
+                  <ModuleErrorBoundary moduleName="Resource Allocation">
+                    <ResourceAllocation />
+                  </ModuleErrorBoundary>
+                }
+              />
+              <Route
+                path="/network-analysis"
+                element={
+                  <ModuleErrorBoundary moduleName="Network Analysis">
+                    <NetworkAnalysis />
+                  </ModuleErrorBoundary>
+                }
+              />
+              <Route
+                path="/intelligent-decision"
+                element={
+                  <ModuleErrorBoundary moduleName="Intelligent Decision">
+                    <IntelligentDecision />
+                  </ModuleErrorBoundary>
+                }
+              />
+              <Route
+                path="/optimization"
+                element={
+                  <ModuleErrorBoundary moduleName="Optimization">
+                    <Optimization />
+                  </ModuleErrorBoundary>
+                }
+              />
             </Routes>
           </Suspense>
         </main>

@@ -119,3 +119,36 @@ body {
   color: #666;
   line-height: 1.6;
 }
+
+.module-error {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.module-error h2 {
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+}
+
+.module-error p {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.module-error-retry {
+  background: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.module-error-retry:hover {
+  background: var(--primary-color);
+}
