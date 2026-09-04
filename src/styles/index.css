@@ -1,10 +1,28 @@
+/*
+ * Host shell styles.
+ *
+ * Every class here is namespaced `idss-` on purpose: federated remotes ship
+ * their own global stylesheets with generic names (`.app-container`,
+ * `.main-content`, `.btn`, `.btn-primary`, …) and style-loader injects them into
+ * the same document. Namespacing keeps the host chrome from styling module
+ * internals and vice versa.
+ */
 :root {
-  --primary-color: #2c3e50;
-  --secondary-color: #3498db;
-  --accent-color: #e74c3c;
-  --success-color: #27ae60;
-  --border-radius: 8px;
-  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --idssh-primary: #1f2a44;
+  --idssh-primary-600: #2c3e50;
+  --idssh-accent: #3b82f6;
+  --idssh-accent-600: #2563eb;
+  --idssh-danger: #e11d48;
+  --idssh-ok: #16a34a;
+  --idssh-warn: #d97706;
+  --idssh-bg: #f4f6fb;
+  --idssh-surface: #ffffff;
+  --idssh-text: #1e293b;
+  --idssh-text-muted: #64748b;
+  --idssh-border: #e2e8f0;
+  --idssh-radius: 10px;
+  --idssh-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --idssh-shadow-md: 0 6px 20px rgba(15, 23, 42, 0.12);
 }
 
 * {
@@ -15,140 +33,434 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  color: #333;
-  background: #f5f5f5;
+  color: var(--idssh-text);
+  background: var(--idssh-bg);
+  -webkit-font-smoothing: antialiased;
 }
 
-.app-container {
+/*
+ * Each federated remote ships its own global `body { ... }` rule (dark themes
+ * included) and style-loader never removes it on unmount. So the host shell owns
+ * its own paint surface instead of trusting `body`: `.idss-shell` covers the
+ * viewport with the host background/text colour no matter what a
+ * previously-visited module left on `body`.
+ */
+.idss-shell {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: var(--idssh-bg);
+  color: var(--idssh-text);
+  position: relative;
+  z-index: 0;
 }
 
-.navbar {
-  background: var(--primary-color);
-  color: white;
-  padding: 1rem 2rem;
+.idss-shell a {
+  color: inherit;
+}
+
+.idss-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: rgba(15, 23, 42, 0.06);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* ---------- Navbar ---------- */
+.idss-nav {
+  background: var(--idssh-primary);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  box-shadow: var(--idssh-shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.idss-nav__brand {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.idss-nav__brand-mark {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.idss-nav__brand-sub {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.idss-nav__links {
+  display: flex;
+  list-style: none;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.idss-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  padding: 0.45rem 0.8rem;
+  border-radius: var(--idssh-radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.idss-nav__link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.idss-nav__link.active {
+  background: var(--idssh-accent);
+  color: #fff;
+}
+
+.idss-nav__link-icon {
+  font-size: 1rem;
+}
+
+/* ---------- Main / footer ---------- */
+.idss-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.idss-footer {
+  border-top: 1px solid var(--idssh-border);
+  background: var(--idssh-surface);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--idssh-text-muted);
+}
+
+/* ---------- Buttons ---------- */
+.idss-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid transparent;
+  border-radius: var(--idssh-radius);
+  padding: 0.55rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.idss-btn--sm {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+.idss-btn--primary {
+  background: var(--idssh-accent);
+  color: #fff;
+}
+
+.idss-btn--primary:hover {
+  background: var(--idssh-accent-600);
+}
+
+.idss-btn--ghost {
+  background: transparent;
+  border-color: var(--idssh-border);
+  color: var(--idssh-text);
+}
+
+.idss-btn--ghost:hover {
+  border-color: var(--idssh-accent);
+  color: var(--idssh-accent-600);
+}
+
+/* ---------- Home ---------- */
+.idss-home__hero {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.idss-home__hero h1 {
+  font-size: 2rem;
+  color: var(--idssh-primary-600);
+  margin-bottom: 0.75rem;
+}
+
+.idss-home__hero p {
+  color: var(--idssh-text-muted);
+  font-size: 1.05rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.idss-home__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.idss-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.idss-pill--ok {
+  background: rgba(22, 163, 74, 0.12);
+  color: var(--idssh-ok);
+}
+
+.idss-pill--warn {
+  background: rgba(217, 119, 6, 0.12);
+  color: var(--idssh-warn);
+}
+
+.idss-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.idss-card {
+  background: var(--idssh-surface);
+  padding: 1.4rem;
+  border: 1px solid var(--idssh-border);
+  border-radius: var(--idssh-radius);
+  box-shadow: var(--idssh-shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.idss-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--idssh-shadow-md);
+  border-color: var(--idssh-accent);
+}
+
+.idss-card__top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: var(--box-shadow);
 }
 
-.nav-brand {
-  font-size: 1.5rem;
-  font-weight: bold;
+.idss-card__icon {
+  font-size: 1.6rem;
 }
 
-.nav-links {
+.idss-card h3 {
+  color: var(--idssh-primary-600);
+  font-size: 1.1rem;
+}
+
+.idss-card p {
+  color: var(--idssh-text-muted);
+  line-height: 1.55;
+  font-size: 0.92rem;
+  flex: 1;
+}
+
+.idss-card__cta {
+  color: var(--idssh-accent-600);
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.idss-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--idssh-text-muted);
+}
+
+.idss-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--idssh-text-muted);
+}
+
+.idss-status--online {
+  color: var(--idssh-ok);
+}
+.idss-status--online::before {
+  background: var(--idssh-ok);
+}
+.idss-status--offline {
+  color: var(--idssh-danger);
+}
+.idss-status--offline::before {
+  background: var(--idssh-danger);
+}
+.idss-status--checking::before {
+  background: var(--idssh-warn);
+  animation: idss-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes idss-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.idss-home__footnote {
+  margin-top: 2rem;
+  text-align: center;
+  color: var(--idssh-text-muted);
+  font-size: 0.85rem;
+}
+
+/* ---------- Module viewport ---------- */
+.idss-viewport {
+  background: var(--idssh-surface);
+  border: 1px solid var(--idssh-border);
+  border-radius: var(--idssh-radius);
+  overflow: hidden;
+  min-height: 60vh;
+}
+
+/* All modules share the light IDSS design system (modules/*/src/styles/idss-theme.css). */
+
+/* ---------- Loading ---------- */
+.idss-loader {
   display: flex;
-  list-style: none;
-  gap: 2rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  color: var(--idssh-text-muted);
+}
+
+.idss-loader__spinner {
+  width: 38px;
+  height: 38px;
+  border: 3px solid var(--idssh-border);
+  border-top-color: var(--idssh-accent);
+  border-radius: 50%;
+  animation: idss-spin 0.8s linear infinite;
+}
+
+@keyframes idss-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Error boundary ---------- */
+.idss-error {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--idssh-surface);
+  border: 1px solid var(--idssh-border);
+  border-radius: var(--idssh-radius);
+  box-shadow: var(--idssh-shadow-sm);
+  max-width: 560px;
+  margin: 2rem auto;
+}
+
+.idss-error__icon {
+  font-size: 2.5rem;
+}
+
+.idss-error h2 {
+  color: var(--idssh-danger);
+  margin: 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+.idss-error p {
+  color: var(--idssh-text-muted);
+  margin-bottom: 0.75rem;
+  line-height: 1.55;
+}
+
+.idss-error__hint {
+  font-size: 0.88rem;
+}
+
+.idss-error__detail {
+  text-align: left;
+  background: rgba(225, 29, 72, 0.06);
+  color: var(--idssh-danger);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  overflow-x: auto;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.idss-error__actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
-.nav-links a {
-  color: white;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: var(--border-radius);
-  transition: background 0.3s;
-}
-
-.nav-links a:hover {
-  background: var(--secondary-color);
-}
-
-.main-content {
-  flex: 1;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.loading {
+/* ---------- 404 ---------- */
+.idss-notfound {
   text-align: center;
-  padding: 2rem;
-  font-size: 1.1rem;
-  color: #666;
+  padding: 4rem 2rem;
 }
 
-.home-page {
-  text-align: center;
+.idss-notfound h1 {
+  font-size: 3rem;
+  color: var(--idssh-primary-600);
 }
 
-.home-page h1 {
-  margin-bottom: 1rem;
-  color: var(--primary-color);
+.idss-notfound p {
+  color: var(--idssh-text-muted);
+  margin: 0.5rem 0 1.5rem;
 }
 
-.home-page p {
-  margin-bottom: 2rem;
-  color: #666;
-  font-size: 1.1rem;
-}
-
-.modules-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
-
-.module-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  text-align: left;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.module-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.module-card h3 {
-  color: var(--secondary-color);
-  margin-bottom: 0.5rem;
-}
-
-.module-card p {
-  color: #666;
-  line-height: 1.6;
-}
-
-.module-error {
-  text-align: center;
-  padding: 3rem 2rem;
-  background: white;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-}
-
-.module-error h2 {
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-}
-
-.module-error p {
-  color: #666;
-  margin-bottom: 1.5rem;
-}
-
-.module-error-retry {
-  background: var(--secondary-color);
-  color: white;
-  border: none;
-  padding: 0.6rem 1.5rem;
-  border-radius: var(--border-radius);
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.module-error-retry:hover {
-  background: var(--primary-color);
+@media (max-width: 640px) {
+  .idss-nav__links {
+    margin-left: 0;
+    width: 100%;
+  }
+  .idss-main {
+    padding: 1.25rem 1rem;
+  }
 }

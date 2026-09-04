@@ -7,9 +7,22 @@
     "start": "webpack serve --mode development --open",
     "build": "webpack --mode production",
     "dev": "webpack serve --mode development",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "dev:host": "webpack serve --mode development",
+    "dev:module1": "npm --prefix modules/module-route-optimizer run dev",
+    "dev:module2": "npm --prefix modules/module-resource-allocator run dev",
+    "dev:module3": "npm --prefix modules/module-network-analyzer run dev",
+    "dev:module4": "npm --prefix modules/module-intelligent-decisions run dev:client",
+    "dev:module4-api": "npm --prefix modules/module-intelligent-decisions/server run dev",
+    "dev:module5": "npm --prefix modules/module-resource-optimizer run dev",
+    "dev:all": "concurrently -k -n host,route,res-alloc,network,decision,decision-api,res-opt -c cyan,green,yellow,magenta,blue,gray,red \"npm:dev:host\" \"npm:dev:module1\" \"npm:dev:module2\" \"npm:dev:module3\" \"npm:dev:module4\" \"npm:dev:module4-api\" \"npm:dev:module5\"",
+    "install:all": "npm install && npm --prefix modules/module-route-optimizer install && npm --prefix modules/module-resource-allocator install && npm --prefix modules/module-network-analyzer install && npm --prefix modules/module-intelligent-decisions install && npm --prefix modules/module-intelligent-decisions/server install && npm --prefix modules/module-resource-optimizer install",
+    "build:all": "npm --prefix modules/module-route-optimizer run build && npm --prefix modules/module-resource-allocator run build && npm --prefix modules/module-network-analyzer run build && npm --prefix modules/module-intelligent-decisions run build:client && npm --prefix modules/module-resource-optimizer run build && npm run build"
   },
-  "keywords": ["module-federation", "micro-frontend"],
+  "keywords": [
+    "module-federation",
+    "micro-frontend"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
@@ -17,6 +30,7 @@
     "@babel/preset-env": "^7.23.0",
     "@babel/preset-react": "^7.23.0",
     "babel-loader": "^9.1.3",
+    "concurrently": "^9.2.4",
     "css-loader": "^6.8.1",
     "html-webpack-plugin": "^5.5.3",
     "style-loader": "^3.3.3",

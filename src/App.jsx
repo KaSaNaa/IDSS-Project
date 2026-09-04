@@ -1,106 +1,94 @@
-import React, { Suspense, lazy, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  NavLink,
+  Link,
+  useLocation,
+} from 'react-router-dom';
+import { MODULES } from './config/modules';
 import ModuleErrorBoundary from './components/ModuleErrorBoundary';
+import ModuleLoader from './components/ModuleLoader';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
 import './styles/index.css';
 
-const Home = lazy(() => import('./pages/Home'));
+function Navbar() {
+  return (
+    <nav className="idss-nav">
+      <Link to="/" className="idss-nav__brand">
+        <span className="idss-nav__brand-mark">IDSS</span>
+        <span className="idss-nav__brand-sub">
+          Intelligent Decision Support System
+        </span>
+      </Link>
+      <ul className="idss-nav__links">
+        <li>
+          <NavLink to="/" end className="idss-nav__link">
+            Home
+          </NavLink>
+        </li>
+        {MODULES.map((m) => (
+          <li key={m.id}>
+            <NavLink to={m.path} className="idss-nav__link">
+              <span className="idss-nav__link-icon" aria-hidden="true">
+                {m.icon}
+              </span>
+              {m.label}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
 
-// Lazy load remote modules
-const RouteOptimization = lazy(() => import('module1/App'));
-const ResourceAllocation = lazy(() => import('module2/App'));
-const NetworkAnalysis = lazy(() => import('module3/App'));
-const IntelligentDecision = lazy(() => import('module4/App'));
-const Optimization = lazy(() => import('module5/App'));
+/** A federated module renders its own full-page UI, so give it an isolated wrapper. */
+function ModuleView({ module }) {
+  const { label, Component } = module;
+  return (
+    <ModuleErrorBoundary module={module}>
+      <Suspense fallback={<ModuleLoader label={label} />}>
+        <div className="idss-viewport" data-module={module.id}>
+          <Component />
+        </div>
+      </Suspense>
+    </ModuleErrorBoundary>
+  );
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 function App() {
-  const [activeModule, setActiveModule] = useState('home');
-
   return (
     <Router>
-      <div className="app-container">
-        <nav className="navbar">
-          <div className="nav-brand">IDSS</div>
-          <ul className="nav-links">
-            <li>
-              <Link to="/" onClick={() => setActiveModule('home')}>
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/route-optimization" onClick={() => setActiveModule('module1')}>
-                Route Optimization
-              </Link>
-            </li>
-            <li>
-              <Link to="/resource-allocation" onClick={() => setActiveModule('module2')}>
-                Resource Allocation
-              </Link>
-            </li>
-            <li>
-              <Link to="/network-analysis" onClick={() => setActiveModule('module3')}>
-                Network Analysis
-              </Link>
-            </li>
-            <li>
-              <Link to="/intelligent-decision" onClick={() => setActiveModule('module4')}>
-                Intelligent Decision
-              </Link>
-            </li>
-            <li>
-              <Link to="/optimization" onClick={() => setActiveModule('module5')}>
-                Optimization
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
-        <main className="main-content">
-          <Suspense fallback={<div className="loading">Loading module...</div>}>
-            <Routes>
-              <Route path="/" element={<Home />} />
+      <ScrollToTop />
+      <div className="idss-shell">
+        <Navbar />
+        <main className="idss-main">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            {MODULES.map((m) => (
               <Route
-                path="/route-optimization"
-                element={
-                  <ModuleErrorBoundary moduleName="Route Optimization">
-                    <RouteOptimization />
-                  </ModuleErrorBoundary>
-                }
+                key={m.id}
+                path={m.path}
+                element={<ModuleView module={m} />}
               />
-              <Route
-                path="/resource-allocation"
-                element={
-                  <ModuleErrorBoundary moduleName="Resource Allocation">
-                    <ResourceAllocation />
-                  </ModuleErrorBoundary>
-                }
-              />
-              <Route
-                path="/network-analysis"
-                element={
-                  <ModuleErrorBoundary moduleName="Network Analysis">
-                    <NetworkAnalysis />
-                  </ModuleErrorBoundary>
-                }
-              />
-              <Route
-                path="/intelligent-decision"
-                element={
-                  <ModuleErrorBoundary moduleName="Intelligent Decision">
-                    <IntelligentDecision />
-                  </ModuleErrorBoundary>
-                }
-              />
-              <Route
-                path="/optimization"
-                element={
-                  <ModuleErrorBoundary moduleName="Optimization">
-                    <Optimization />
-                  </ModuleErrorBoundary>
-                }
-              />
-            </Routes>
-          </Suspense>
+            ))}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </main>
+        <footer className="idss-footer">
+          <span>IDSS &middot; Module Federation host</span>
+          <span>{MODULES.length} modules integrated</span>
+        </footer>
       </div>
     </Router>
   );

@@ -21,6 +21,23 @@ module.exports = {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
+    // The Intelligent Decision module (remote on :3004) talks to its API server
+    // on :5000 via relative URLs. When it runs inside the host these requests
+    // hit :3000, so proxy them through to the API service.
+    proxy: [
+      {
+        context: ['/api', '/health'],
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      {
+        // The Optimization module (remote on :3005) loads its benchmark dataset
+        // from an absolute path; serve it from that module's own dev server.
+        context: ['/benchmark-results.json'],
+        target: 'http://localhost:3005',
+        changeOrigin: true,
+      },
+    ],
     client: {
       overlay: {
         errors: true,
@@ -64,6 +81,7 @@ module.exports = {
       shared: {
         react: { singleton: true, requiredVersion: false },
         'react-dom': { singleton: true, requiredVersion: false },
+        'react-router-dom': { singleton: true, requiredVersion: false },
       },
     }),
     new HtmlWebpackPlugin({
