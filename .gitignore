@@ -10,3 +10,4 @@ yarn-error.log*
 .cache
 .parcel-cache
 dist/
+docs/Chapter2-Overall-System-Design.md
